@@ -16,8 +16,6 @@ PIPE_HEIGHT = 500
 PIPE_GAP = 200
 
 # FIXME: EnemyBird jest wyswietlany na zlej wysokosci
-# TODO: EnemyBird nie macha skrzydlami
-# TODO: EnemyBird pownien patrzec w lewa strone
 
 class Bird(pygame.sprite.Sprite):
 
@@ -59,14 +57,19 @@ class EnemyBird(pygame.sprite.Sprite):
                        pygame.image.load('bluebird-midflap.png').convert_alpha(),
                        pygame.image.load('bluebird-downflap.png').convert_alpha()]
 
-        self.image = self.images[0]
+        self.images = [pygame.transform.flip(i, True, False) for i in self.images]
+
+        self.current_image = 0
+        self.image = self.images[self.current_image]
         self.mask = pygame.mask.from_surface(self.image)
 
         self.rect = self.image.get_rect()
         self.rect[0] = xpos
-        self.rect[1] = ypos
+        self.rect[1] = SCREEN_HEIGHT - ypos
 
     def update(self):
+        self.current_image = (self.current_image + 1) % 3
+        self.image = self.images[ self.current_image ]
         self.rect[0] -= GAME_SPEED
 
 class Pipe(pygame.sprite.Sprite):
